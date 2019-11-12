@@ -9,6 +9,7 @@ import com.xingen.hookdemo.hook.application.ApplicationHook;
 import com.xingen.hookdemo.hook.classLoader.ClassLoaderHookManager;
 import com.xingen.hookdemo.hook.contentprovider.ContentProviderHookManager;
 import com.xingen.hookdemo.hook.resource.ResourceHookManager;
+import com.xingen.hookdemo.hook.resource.ResourceHookMgr;
 import com.xingen.hookdemo.hook.service.ServiceHookManager;
 import com.xingen.hookdemo.utils.Utils;
 
@@ -48,6 +49,7 @@ public class ProxyApplication extends Application {
         ClassLoaderHookManager.init(context, zipFilePath, optimizedDirectory);
         //加载插件资源
         ResourceHookManager.init(context, zipFilePath);
+        ResourceHookMgr.init(context, zipFilePath);
         // hook service ，解析多进程的service 。多进程，会重复走onCreate()
         ServiceHookManager.init(context, zipFilePath);
         // hook ContentProvider(加载ContentProvider是在application 的onCreate()之前)

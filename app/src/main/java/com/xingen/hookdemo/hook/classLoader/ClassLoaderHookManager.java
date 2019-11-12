@@ -125,9 +125,21 @@ public class ClassLoaderHookManager {
                 List<File> systemNativeLibraryDirectories = (List<File>) systemNativeLibraryDirectoriesField.get(dexPathList);
                 allNativeLibDirList.addAll(systemNativeLibraryDirectories);
                 //通过makePathElements获取到c++存放的Element
-                Method makePathElementsMethod = DexPathListClass.getDeclaredMethod("makePathElements", List.class, List.class, ClassLoader.class);
-                makePathElementsMethod.setAccessible(true);
-                Object[] allNativeLibraryPathElements = (Object[]) makePathElementsMethod.invoke(null, allNativeLibDirList, new ArrayList<IOException>(), appClassLoader);
+                Method makePathElementsMethod ;
+                Object[] allNativeLibraryPathElements = new Object[0];
+                try {
+                    makePathElementsMethod = DexPathListClass.getDeclaredMethod("makePathElements", List.class, List.class, ClassLoader.class);
+                    makePathElementsMethod.setAccessible(true);
+                    allNativeLibraryPathElements = (Object[]) makePathElementsMethod.invoke(null, allNativeLibDirList, new ArrayList<IOException>(), appClassLoader);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    makePathElementsMethod = DexPathListClass.getDeclaredMethod("makePathElements", List.class);
+                    makePathElementsMethod.setAccessible(true);
+                    allNativeLibraryPathElements = (Object[]) makePathElementsMethod.invoke(null, allNativeLibDirList);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
                 //将合并宿主和插件的so库，重新设置进去
                 Field nativeLibraryPathElementsField = DexPathListClass.getDeclaredField("nativeLibraryPathElements");
                 nativeLibraryPathElementsField.setAccessible(true);

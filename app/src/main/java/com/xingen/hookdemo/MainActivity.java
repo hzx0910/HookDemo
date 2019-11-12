@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.xingen.hookdemo.hook.ams.AMSHookManager;
 import com.xingen.hookdemo.hook.receiver.ReceiverHookManager;
 import com.xingen.hookdemo.hook.resource.ResourceHookManager;
+import com.xingen.hookdemo.hook.resource.ResourceHookMgr;
 
 import java.lang.reflect.Method;
 
@@ -31,11 +32,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(newBase);
         appMainClassLoader = this.getClassLoader();
-        String apkFilePath = PluginConfig.getZipFilePath(this);
         // hook  ams
         String subPackageName = getPackageName();
         AMSHookManager.init(newBase,subPackageName);
         // hook 广播
+        String apkFilePath = PluginConfig.getZipFilePath(this);
         ReceiverHookManager.init(this, apkFilePath);
     }
 
@@ -106,9 +107,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
     private void usePluginResource() {
-        ImageView imageView = findViewById(R.id.main_show_plugin_img_iv);
+        /*ImageView imageView = findViewById(R.id.main_show_plugin_img_iv);
         int imgId=ResourceHookManager.getDrawableId("plugin_img", PluginConfig.package_name);
-        imageView.setImageDrawable(getResources().getDrawable(imgId));
+        imageView.setImageDrawable(getResources().getDrawable(imgId));*/
+        ImageView imageView = findViewById(R.id.main_show_plugin_img_iv);
+        imageView.setImageDrawable(ResourceHookMgr.getDrawable("plugin_img", PluginConfig.package_name));
     }
 
     private void useContentProvider(View view) {
