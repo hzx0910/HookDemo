@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,8 +19,8 @@ import android.widget.Toast;
 
 import com.xingen.hookdemo.hook.ams.AMSHookManager;
 import com.xingen.hookdemo.hook.receiver.ReceiverHookManager;
-import com.xingen.hookdemo.hook.resource.ResourceHookManager;
 import com.xingen.hookdemo.hook.resource.ResourceHookMgr;
+import com.xingen.hookdemo.util.PhoneInfos;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +35,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         appMainClassLoader = this.getClassLoader();
         // hook  ams
         String subPackageName = getPackageName();
-        AMSHookManager.init(newBase,subPackageName);
+        AMSHookManager.init(newBase, subPackageName);
         // hook 广播
         String apkFilePath = PluginConfig.getZipFilePath(this);
         ReceiverHookManager.init(this, apkFilePath);
@@ -52,15 +53,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.main_hook_resource).setOnClickListener(this);
         findViewById(R.id.main_hook_native).setOnClickListener(this);
         findViewById(R.id.main_hook_application_btn).setOnClickListener(this);
+        Log.v("MacAddressAspect 0", PhoneInfos.mac0());
+        Log.v("MacAddressAspect 1", PhoneInfos.mac1());
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_hook_application_btn:
-                Application application=getApplication();
-                Toast.makeText(getApplicationContext()," Application的类名是： "+application.getClass().getSimpleName(),Toast.LENGTH_LONG).show();
-            break;
+                Application application = getApplication();
+                Toast.makeText(getApplicationContext(), " Application的类名是： " + application.getClass().getSimpleName(), Toast.LENGTH_LONG).show();
+                break;
             case R.id.main_hook_fragment_btn:
                 loadPlugin();
                 break;
@@ -83,29 +86,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.main_hook_resource:
                 usePluginResource();
                 break;
-            case R.id.main_hook_native:{
+            case R.id.main_hook_native: {
                 useNativeLibrary();
             }
-                break;
+            break;
 
         }
     }
 
-    private void useNativeLibrary(){
+    private void useNativeLibrary() {
         try {
-            Class<?> mClass=appMainClassLoader.loadClass(PluginConfig.native_class_name);
-            Object instance= mClass.newInstance();
-            Method  getShowContentMethod=mClass.getDeclaredMethod("getShowContent");
+            Class<?> mClass = appMainClassLoader.loadClass(PluginConfig.native_class_name);
+            Object instance = mClass.newInstance();
+            Method getShowContentMethod = mClass.getDeclaredMethod("getShowContent");
             getShowContentMethod.setAccessible(true);
-           String content=(String) getShowContentMethod.invoke(instance);
-           if (!TextUtils.isEmpty(content)){
-               Toast.makeText(this,content,Toast.LENGTH_SHORT).show();
-           }
-        }catch (Exception e){
+            String content = (String) getShowContentMethod.invoke(instance);
+            if (!TextUtils.isEmpty(content)) {
+                Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     private void usePluginResource() {
         /*ImageView imageView = findViewById(R.id.main_show_plugin_img_iv);
         int imgId=ResourceHookManager.getDrawableId("plugin_img", PluginConfig.package_name);

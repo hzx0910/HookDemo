@@ -48,7 +48,7 @@ public class ProxyApplication extends Application {
         // 加载插件dex
         ClassLoaderHookManager.init(context, zipFilePath, optimizedDirectory);
         //加载插件资源
-        ResourceHookManager.init(context, zipFilePath);
+        //ResourceHookManager.init(context, zipFilePath);
         ResourceHookMgr.init(context, zipFilePath);
         // hook service ，解析多进程的service 。多进程，会重复走onCreate()
         ServiceHookManager.init(context, zipFilePath);
