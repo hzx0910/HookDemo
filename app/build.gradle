@@ -14,9 +14,26 @@ android {
         ndk { abiFilters 'armeabi-v7a', 'arm64-v8a' }
 
     }
+
+    signingConfigs {
+        debug{
+            storeFile file("../gamecenter.key")
+            storePassword "120706"
+            keyAlias "gamecenter.key"
+            keyPassword "120706"
+        }
+        release {
+            storeFile file("../gamecenter.key")
+            storePassword "120706"
+            keyAlias "gamecenter.key"
+            keyPassword "120706"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -28,6 +45,11 @@ android {
         exclude 'com.bilibili'
         exclude 'universal-image-loader'
         exclude 'versions.9'//https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx/issues/287
+    }
+
+    compileOptions{
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
 }
@@ -42,4 +64,5 @@ dependencies {
     //反黑名单
     //https://github.com/tiann/FreeReflection
     implementation 'com.github.tiann:FreeReflection:3.1.0'
+    implementation 'org.aspectj:aspectjrt:1.9.9.1'
 }

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.xingen.hookdemo.aspect.StackAspect;
 import com.xingen.hookdemo.hook.ams.AMSHookManager;
 import com.xingen.hookdemo.hook.receiver.ReceiverHookManager;
 import com.xingen.hookdemo.hook.resource.ResourceHookMgr;
@@ -55,6 +57,24 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.main_hook_application_btn).setOnClickListener(this);
         Log.v("MacAddressAspect 0", PhoneInfos.mac0());
         Log.v("MacAddressAspect 1", PhoneInfos.mac1());
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (BuildConfig.DEBUG) StackAspect.printSource();
+            }
+        });
+
+//        findViewById(R.id.main_hook_fragment_btn).setOnClickListener(v -> Log.v("ViewClickAspect", "lambda click"));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Handler().post(() -> {
+            if (BuildConfig.DEBUG) StackAspect.printSource();
+            Log.v("Jooo","onResume");
+        });
     }
 
     @Override
